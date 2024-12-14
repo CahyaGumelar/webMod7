@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Kamar & Fasilitas</title>
+    <script>
+        function validasiForm() {
+            const roomNumber = document.getElementById("roomNumber").value;
+            const roomPrice = parseFloat(document.getElementById("roomPrice").value);
+            const facilityName = document.getElementById("facilityName").value;
+            const facilityDesc = document.getElementById("facilityDescription").value;
+
+            if (!roomNumber || isNaN(roomPrice) || roomPrice <= 0) {
+                alert("Isi nomor kamar dan harga dengan benar.");
+                return false;
+            }
+
+            if (!facilityName || !facilityDesc) {
+                alert("Isi nama dan deskripsi fasilitas.");
+                return false;
+            }
+
+            alert("Data kamar dan fasilitas berhasil ditambahkan!");
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h2>Tambah Data Kamar & Fasilitas</h2>
+    <form onsubmit="return validasiForm()">
+        <h3>Kamar</h3>
+        <label>Nomor Kamar: <input type="text" id="roomNumber" required></label><br><br>
+        <label>Harga Kamar: <input type="text" id="roomPrice" required></label><br><br>
+
+        <h3>Fasilitas</h3>
+        <label>Nama Fasilitas: <input type="text" id="facilityName" required></label><br><br>
+        <label>Deskripsi Fasilitas: <textarea id="facilityDescription" required></textarea></label><br><br>
+
+        <button type="submit">Tambahkan</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Pemesanan</title>
+    <style>
+        /* Style untuk form container */
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f2f2f2;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Judul Form */
+        h3 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Style untuk label dan input */
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: calc(100% - 24px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* Style untuk checkbox */
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-container label {
+            margin-left: 5px;
+            font-weight: normal;
+        }
+
+        /* Style untuk tombol */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .button-container .save-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .button-container .cancel-btn {
+            background-color: #ffc107;
+            color: white;
+        }
+
+        /* Style untuk resume pemesanan */
+        #resume {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script>
+        function hitungTotalBayar() {
+            const tipeKamar = document.getElementById("tipe_kamar").value;
+            const durasiMenginap = parseInt(document.getElementById("durasi").value) || 0;
+            const breakfast = document.getElementById("breakfast").checked;
+
+            let harga = 0;
+
+            // Tentukan harga berdasarkan tipe kamar
+            if (tipeKamar === "standar") harga = 300000;
+            else if (tipeKamar === "deluxe") harga = 500000;
+            else if (tipeKamar === "family") harga = 800000;
+
+            // Set harga di field "harga"
+            document.getElementById("harga").value = harga;
+
+            // Hitung total biaya
+            let totalBayar = harga * durasiMenginap;
+
+            // Diskon 10% jika menginap lebih dari 3 hari
+            let diskon = 0;
+            if (durasiMenginap > 3) {
+                totalBayar *= 0.9;
+                diskon = 10; // 10% diskon
+            }
+
+            // Tambah biaya 80.000 jika termasuk breakfast
+            if (breakfast) {
+                totalBayar += 80000;
+            }
+
+            // Set nilai total bayar
+            document.getElementById("total_bayar").value = totalBayar.toFixed(2);
+            document.getElementById("diskon").value = diskon;
+        }
+
+        function validasiForm(event) {
+            const nomorIdentitas = document.getElementById("nomor_identitas").value;
+            const durasiMenginap = document.getElementById("durasi").value;
+
+            // Validasi nomor identitas (16 digit)
+            if (nomorIdentitas.length !== 16 || isNaN(nomorIdentitas)) {
+                alert("Isian salah, nomor identitas harus 16 digit");
+                event.preventDefault();
+                return false;
+            }
+
+            // Validasi durasi menginap (angka)
+            if (isNaN(durasiMenginap) || durasiMenginap <= 0) {
+                alert("Durasi menginap harus diisi dengan angka yang benar");
+                event.preventDefault();
+                return false;
+            }
+
+            hitungTotalBayar(); // Hitung total bayar sebelum submit
+            tampilkanResume(); // Menampilkan resume pemesanan
+            return false; // Mencegah pengiriman formulir
+        }
+
+        function tampilkanResume() {
+            const namaPemesan = document.getElementById("nama_pemesan").value;
+            const nomorIdentitas = document.getElementById("nomor_identitas").value;
+            const jenisKelamin = document.querySelector('input[name="jenis_kelamin"]:checked').value;
+            const tipeKamar = document.getElementById("tipe_kamar").value;
+            const durasiMenginap = document.getElementById("durasi").value;
+            const diskon = document.getElementById("diskon").value;
+            const totalBayar = document.getElementById("total_bayar").value;
+
+            const resume = `
+                <h3>Resume Pemesanan</h3>
+                <p><strong>Nama Pemesan:</strong> ${namaPemesan}</p>
+                <p><strong>Nomor Identitas:</strong> ${nomorIdentitas}</p>
+                <p><strong>Jenis Kelamin:</strong> ${jenisKelamin}</p>
+                <p><strong>Tipe Kamar:</strong> ${tipeKamar}</p>
+                <p><strong>Durasi Menginap:</strong> ${durasiMenginap} hari</p>
+                <p><strong>Diskon:</strong> ${diskon}%</p>
+                <p><strong>Total Bayar:</strong> Rp ${totalBayar}</p>
+            `;
+
+            document.getElementById("resume").innerHTML = resume;
+        }
+    </script>
+</head>
+<body>
+
+<div class="form-container">
+    <h3>Form Pemesanan</h3>
+    <form onsubmit="return validasiForm(event)">
+        
+        <label for="id_pemesanan">Id Pemesan:</label>
+        <input type="number" id="id_pemesanan" name="id_pemesanan" value="1" readonly>
+
+        <label for="nama_pemesan">Nama Pemesan:</label>
+        <input type="text" id="nama_pemesan" name="nama_pemesan" required>
+
+        <label for="nomor_identitas">Nomor Identitas:</label>
+        <input type="text" id="nomor_identitas" name="nomor_identitas" required>
+
+        <label for="jenis_kelamin">Jenis Kelamin:</label>
+        <input type="radio" id="jenis_kelamin" name="jenis_kelamin" value="Laki-laki" required> Laki-laki
+        <input type="radio" id="jenis_kelamin" name="jenis_kelamin" value="Perempuan" required> Perempuan
+        <br><br>
+
+        <label for="tipe_kamar">Tipe Kamar:</label>
+        <select id="tipe_kamar" name="tipe_kamar" required onchange="hitungTotalBayar()">
+            <option value="">--Pilih--</option>
+            <option value="standar">STANDAR</option>
+            <option value="deluxe">DELUXE</option>
+            <option value="family">FAMILY</option>
+        </select>
+
+        <label for="harga">Harga:</label>
+        <input type="text" id="harga" name="harga" readonly>
+
+        <label for="tanggal_pesan">Tanggal Pesan:</label>
+        <input type="date" id="tanggal_pesan" name="tanggal_pesan" required>
+
+        <label for="durasi">Durasi Menginap:</label>
+        <input type="number" id="durasi" name="durasi" required oninput="hitungTotalBayar()"> Hari
+
+        <div class="checkbox-container">
+            <input type="checkbox" id="breakfast" name="breakfast" value="ya" onclick="hitungTotalBayar()">
+            <label for="breakfast">Termasuk Breakfast: Ya</label>
+        </div>
+
+        <label for="total_bayar">Total Bayar:</label>
+        <input type="text" id="total_bayar" name="total_bayar" readonly>
+
+        <div class="button-container">
+            <button type="submit" class="save-btn">Simpan</button>
+            <button type="reset" class="cancel-btn">Batal</button>
+        </div>
+    </form>
+</div>
+
+<div id="resume"></div> <!-- Div untuk menampilkan resume -->
+
+</body>
+</html>
